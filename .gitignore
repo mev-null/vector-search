@@ -1,0 +1,7 @@
+.python-version
+.DS_Store
+.docker/
+.envrc
+.env.development
+.env
+*.pem
