@@ -4,4 +4,5 @@
 .envrc
 .env.development
 .env
-*.pem
+*.pem__pycache__/
+*.pyc
