@@ -6,3 +6,4 @@
 .env
 *.pem__pycache__/
 *.pyc
+alembic/script.py.mako
