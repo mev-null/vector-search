@@ -1,4 +1,3 @@
-# api/routers/data.py
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -6,13 +5,7 @@ from sentence_transformers import SentenceTransformer
 
 import schemas, crud
 from database import get_async_db
-
-# 入力データ構造
-class NasaApodInput(schemas.BaseModel):
-  title: str
-  explanation: str
-  url: str
-  date: str
+from models import NasaApodInput
 
 router = APIRouter()
 
@@ -21,14 +14,14 @@ _model = SentenceTransformer("all-MiniLM-L6-v2")
 @router.post("/data", response_model=List[schemas.SearchResultItem], tags=["Data Management"])
 async def load_data(items: List[NasaApodInput], db: AsyncSession = Depends(get_async_db)):
   """
-  APODデータのリストを受け取り、ベクトル埋め込みを生成してデータベースに保存します。
+  APODデータのリストを受け取り、ベクトル埋め込みを生成してデータベースに保存
 
-  - **入力**: `title`, `explanation`, `url`, `date`を持つオブジェクトのJSON配列。
-  - **処理**:
-    1. 各項目について、`explanation`を'all-MiniLM-L6-v2'モデルでベクトル化します。
-    2. 元の`title`, `url`, `date`と新しい`embedding`をCRUD関数に渡します。
-    3. CRUD関数がSQLAlchemyを通じてPostgreSQLデータベースにデータを保存します。
-  - **出力**: 保存に成功した項目のJSON配列（embeddingを除く）。
+  Args:
+    items (List[NasaApodInput]): それぞれが`title`, `explanation`, `url`, `date`を持つオブジェクトのリスト。
+    db (AsyncSession): データベースへの非同期セッション。
+
+  Returns:
+    List[models.Apod]: データベースへの保存に成功した項目のリスト。各項目はSQLAlchemyのモデルオブジェクト
   """
   created_items = []
   for item in items:
