@@ -6,3 +6,5 @@ alembic
 pgvector
 asyncpg
 sentence-transformers
+dotenv
+httpx

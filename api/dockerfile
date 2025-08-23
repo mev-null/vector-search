@@ -2,6 +2,8 @@
 # Pythonの公式イメージを使用
 FROM python:3.10-slim
 
+ENV PATH="/root/.local/bin:${PATH}"
+
 # 作業ディレクトリを設定
 WORKDIR /app
 

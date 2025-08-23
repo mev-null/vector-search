@@ -20,6 +20,6 @@ async_session = sessionmaker(
 Base = declarative_base()
 
 # 依存性注入のための関数
-async def get_db():
+async def get_async_db():
   async with async_session() as session:
     yield session
