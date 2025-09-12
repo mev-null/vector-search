@@ -1,4 +1,3 @@
-#api/crud.py
 from typing import Optional, List
 
 from sqlalchemy import select, and_

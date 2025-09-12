@@ -1,0 +1,32 @@
+[project]
+name = "api"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Nemoto Mizuki",email = "n.mizuki.040618@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi (>=0.116.1,<0.117.0)",
+    "uvicorn (>=0.35.0,<0.36.0)",
+    "sqlalchemy (>=2.0.43,<3.0.0)",
+    "psycopg2-binary (>=2.9.10,<3.0.0)",
+    "sentence-transformers (>=5.1.0,<6.0.0)",
+    "alembic (>=1.16.5,<2.0.0)",
+    "pgvector (>=0.4.1,<0.5.0)",
+    "asyncpg (>=0.30.0,<0.31.0)",
+    "python-dotenv (>=1.1.1,<2.0.0)",
+    "httpx (>=0.28.1,<0.29.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.2"
+black = "^25.1.0"
+ruff = "^0.13.0"
+

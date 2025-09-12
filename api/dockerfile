@@ -1,5 +1,4 @@
 # Dockerfile
-# Pythonの公式イメージを使用
 FROM python:3.10-slim
 
 ENV PATH="/root/.local/bin:${PATH}"
@@ -7,11 +6,19 @@ ENV PATH="/root/.local/bin:${PATH}"
 # 作業ディレクトリを設定
 WORKDIR /app
 
-# requirements.txtをコンテナにコピー
-COPY requirements.txt .
+# Poetry自体のインストール
+RUN pip install poetry
 
-# 必要なPythonライブラリをインストール
-RUN pip install --no-cache-dir -r requirements.txt
+# Poetryが仮想環境をプロジェクト内に作らないように設定
+# (Dockerではコンテナ自体が環境分離の役割を果たすため)
+RUN poetry config virtualenvs.create false
 
-# アプリケーションのコードをコンテナにコピー
+# 依存関係ファイルを先にコピー
+COPY ./pyproject.toml ./poetry.lock* /app/
+
+# --no-devオプションで本番用のライブラリのみインストール
+# --no-rootはプロジェクト自体はインストールしないオプション
+RUN poetry install --no-root --without dev
+
+# アプリケーションコードをコピー
 COPY . .
