@@ -24,13 +24,7 @@ Dockerコンテナをバックグラウンドでビルド・起動します。
 
 docker-compose up -d --build
 ```
-### データベースマイグレーションの実行
-この一度きりのコマンドで、データベースに必要なテーブルを作成します。
 
-```Bash
-
-docker-compose exec app alembic upgrade head
-```
 ### 初期データの投入
 NASA APOD APIからデータを取得・ベクトル化し、データベースに保存するスクリプトを実行します。このコマンドはFastAPIサーバーが起動している状態で実行する必要があります。
 
