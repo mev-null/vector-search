@@ -1,23 +1,35 @@
-from sqlalchemy import Column, Integer, String
+from datetime import datetime, timezone
+from sqlmodel import SQLModel, Field
 from pgvector.sqlalchemy import Vector
+from sqlalchemy import Column
+from uuid import UUID
 
-from database import Base
-import schemas
 
-VECTOR_DIMENSION = 384
-# 'all-MiniLM-L6-v2'model
+def get_now_utc():
+    return datetime.now(timezone.utc)
 
-class Apod(Base):
-  __tablename__ = "apod"
 
-  id = Column(Integer, primary_key=True)
-  title = Column(String(1024))
-  url = Column(String(2048))
-  date = Column(String(10))
-  embedding = Column(Vector(VECTOR_DIMENSION))
+class ApodUrls(SQLModel, table=True):
+    """schema of APOD URLs"""
+    __tablename__ = "apod_url"
 
-class NasaApodInput(schemas.BaseModel):
-  title: str
-  explanation: str
-  url: str
-  date: str
+    id: UUID = Field(default=None, primary_key=True)
+    title: str
+    url: str
+    date: str
+    embedding: list[float] = Field(
+        sa_column=Column(Vector(384))
+    )
+    created_at: datetime = Field(default_factory=get_now_utc)
+    updated_at: datetime = Field(
+        default_factory=get_now_utc,
+        sa_column_kwargs={"onupdate": get_now_utc}
+    )
+
+
+class NasaApodInput(SQLModel):
+    """model class of json from APOD API"""
+    title: str | None = None
+    explanation: str | None = None
+    url: str | None = None
+    date: str | None = None
