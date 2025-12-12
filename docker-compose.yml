@@ -1,38 +1,41 @@
-version: '3.8'
-
 services:
   db:
-    image: ankane/pgvector:v0.5.0
+    image: pgvector/pgvector:pg16
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: my_database
-    # .env ファイルを読み込む設定
-    env_file:
-      - .env
+      POSTGRES_DB: ${POSTGRES_DB:-my_database}
     ports:
       - '5432:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
-  
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB:-my_database}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   app:
     build:
-      context: ./api
-      dockerfile: dockerfile
+      context: .
+      dockerfile: Dockerfile
     restart: always
     ports:
       - '8000:8000'
     volumes:
-      - ./api:/app
+      - .:/app
+      - /app/.venv
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - DATABASE_URL=${SQLALCHEMY_DATABASE_URI}
-      - PYTHONPATH=/app
-    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+      - POSTGRES_DB=${POSTGRES_DB:-my_database}
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-my_database}
+      - NASA_API_KEY=${NASA_API_KEY}
+    command: ["uv", "run", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 volumes:
   postgres-data:

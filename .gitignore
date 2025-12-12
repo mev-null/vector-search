@@ -1,9 +1,40 @@
+# --- Python & Bytecode ---
+__pycache__/
+*.py[cod]
+*$py.class
 .python-version
-.DS_Store
-.docker/
-.envrc
-.env.development
+
+# --- Virtual Environments (uv / venv) ---
+# uv が作成する仮想環境
+.venv/
+venv/
+env/
+
+# --- Environment & Security ---
+# パスワードやAPIキーが含まれるため絶対コミットしない
 .env
-*.pem__pycache__/
-*.pyc
-.alembic/script.py.mako
+.env.*
+.envrc
+*.pem
+
+# --- OS & System ---
+.DS_Store
+Thumbs.db
+
+# --- Docker ---
+.docker/
+docker-compose.override.yml
+
+# --- VS Code / IDE ---
+.vscode/
+.idea/
+
+# --- Project Output (Media/Data) ---
+*.wav
+*.mp3
+*.jpg
+*.jpeg
+*.png
+output/
+downloads/
+data/

@@ -1,0 +1,28 @@
+{
+  "name": "NASA APOD Controller",
+  // Microsoft公式のPythonイメージ
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "moby": false
+    },
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.pylance",
+        "charliermarsh.ruff",
+        "tamasfe.even-better-toml",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  "postCreateCommand": "pip install uv && uv sync",
+  "workspaceFolder": "/workspaces/vector-search",
+  "forwardPorts": [
+    8000,
+    5432
+  ],
+  "remoteUser": "vscode"
+}
