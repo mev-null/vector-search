@@ -4,12 +4,12 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 WORKDIR /app
 
-# COPY pyproject.toml uv.lock ./
+COPY api/pyproject.toml api/uv.lock ./
 
-# RUN uv sync --frozen --no-cache
+RUN uv sync --frozen --no-dev
 
 COPY . .
 
 ENV PATH="/app/.venv/bin:$PATH"
 
-CMD ["uv", "run", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
