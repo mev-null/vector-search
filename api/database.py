@@ -8,17 +8,18 @@ ASYNC_DB_URL = os.getenv("DATABASE_URL").replace("postgresql://", "postgresql+as
 
 async_engine = create_async_engine(ASYNC_DB_URL, echo=True)
 async_session = sessionmaker(
-  autocommit=False, 
-  autoflush=False, 
-  bind=async_engine, 
-  class_=AsyncSession,
-  expire_on_commit=False # トランザクションコミット後もオブジェクトが使用できるようにする
+    autocommit=False,
+    autoflush=False,
+    bind=async_engine,
+    class_=AsyncSession,
+    expire_on_commit=False,  # トランザクションコミット後もオブジェクトが使用できるようにする
 )
 
 # SQLAlchemyのORMモデルのベースクラス
 Base = declarative_base()
 
+
 # 依存性注入のための関数
 async def get_async_db():
-  async with async_session() as session:
-    yield session
+    async with async_session() as session:
+        yield session
