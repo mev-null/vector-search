@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: lint + migrate + pytest
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: apod
+          POSTGRES_PASSWORD: apod
+          POSTGRES_DB: apod_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U apod -d apod_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://apod:apod@localhost:5432/apod_test
+      TEST_DATABASE_URL: postgresql://apod:apod@localhost:5432/apod_test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install
+        run: uv sync --group dev
+
+      - name: Format check (ruff)
+        run: uv run ruff format --check api tests
+
+      - name: Lint (ruff)
+        run: uv run ruff check api tests
+
+      - name: Migrate (alembic upgrade head)
+        run: uv run alembic -c api/alembic.ini upgrade head
+
+      - name: Schema drift (alembic check)
+        run: uv run alembic -c api/alembic.ini check
+
+      - name: Test
+        run: uv run pytest -m "not slow" -q
+
+  docker:
+    name: docker build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t apod-vector-search .
