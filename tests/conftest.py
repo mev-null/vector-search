@@ -110,7 +110,10 @@ def migrated_database() -> Iterator[None]:
 
 @pytest.fixture(autouse=True)
 async def clean_tables() -> AsyncIterator[None]:
-    """Start every test from an empty table; dispose the engine so no connection outlives the loop."""
+    """Start every test from an empty table; dispose the engine so no connection outlives the loop.
+
+    (asyncpg connections are bound to the event loop that created them.)
+    """
     from api.database import engine
 
     async with engine.begin() as conn:
