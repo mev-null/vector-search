@@ -4,14 +4,14 @@ from fastapi import FastAPI
 from routers import search, data
 
 openapi_tags = [
-  {
-    "name": "APOD",
-    "description": "NASA APOD への参考リンク",
-    "externalDocs": {
-      "description": "APOD Archive",
-      "url": "https://apod.nasa.gov/apod/archivepix.html",
-    },
-  }
+    {
+        "name": "APOD",
+        "description": "NASA APOD への参考リンク",
+        "externalDocs": {
+            "description": "APOD Archive",
+            "url": "https://apod.nasa.gov/apod/archivepix.html",
+        },
+    }
 ]
 
 app = FastAPI(
@@ -23,7 +23,8 @@ app = FastAPI(
 
 @app.get("/")
 def read_root():
-  return {"message": "Welcome to the NASA Vector Search API!"}
+    return {"message": "Welcome to the NASA Vector Search API!"}
+
 
 app.include_router(search.router)
 app.include_router(data.router)
